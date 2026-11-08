@@ -1,0 +1,700 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePulse | Movie Details</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1020;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            background: #151b2b;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            color: #31d7c2;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: #31d7c2;
+        }
+
+        .welcome-user {
+            color: #31d7c2;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #ffb84d;
+            color: #0b1020;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #e9a43d;
+        }
+
+        .back {
+            display: inline-block;
+            margin: 25px 7%;
+            color: #31d7c2;
+            text-decoration: none;
+        }
+
+        .movie-details {
+            display: flex;
+            gap: 35px;
+            padding: 30px 7%;
+            flex-wrap: wrap;
+        }
+
+        .poster {
+            width: 280px;
+            height: 400px;
+            background: #263449;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #31d7c2;
+        }
+
+        .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        h1 {
+            color: #31d7c2;
+            margin-bottom: 20px;
+        }
+
+        .info p {
+            margin-bottom: 15px;
+            color: #c0c8d5;
+            line-height: 1.6;
+        }
+
+        .rating {
+            color: #ffb84d !important;
+            font-size: 20px;
+        }
+
+        .watchlist-btn {
+            background: #31d7c2;
+            color: #0b1020;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .watchlist-btn:hover {
+            background: #25bba9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .section {
+            padding: 30px 7%;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        .review-card {
+            background: #151b2b;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .review-card p {
+            margin-top: 10px;
+            color: #c0c8d5;
+        }
+
+        .review-form {
+            background: #151b2b;
+            padding: 22px;
+            border-radius: 10px;
+            max-width: 600px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #31d7c2;
+            color: #0b1020;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #25bba9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            color: #31d7c2;
+            text-decoration: none;
+        }
+
+        .login-status {
+            color: #a5adbd;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #151b2b;
+            color: #a5adbd;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">CinePulse</div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#movies">Movies</a>
+        <a href="watchlist.html">My Watchlist</a>
+
+        <span id="authNavigation"></span>
+    </nav>
+</header>
+
+<a href="index.html" class="back">← Back to Movies</a>
+
+<section class="movie-details">
+
+    <div class="poster" id="moviePoster">
+        Loading...
+    </div>
+
+    <div class="info">
+        <h1 id="movieTitle">Loading movie...</h1>
+
+        <p id="movieOverview"></p>
+        <p id="movieLanguage"></p>
+        <p id="movieRelease"></p>
+        <p id="movieGenres"></p>
+
+        <p class="rating" id="movieRating">
+            Rating: Loading...
+        </p>
+
+        <button
+            type="button"
+            class="watchlist-btn"
+            id="watchlistButton"
+            onclick="addToWatchlist()">
+            + Add to Watchlist
+        </button>
+    </div>
+
+</section>
+
+<section class="section">
+    <h2>User Reviews</h2>
+    <div id="reviewsContainer">Loading reviews...</div>
+</section>
+
+<section class="section">
+    <h2>Write a Review</h2>
+
+    <div class="review-form">
+
+        <p class="login-status" id="loginStatus"></p>
+
+        <form id="reviewForm">
+
+            <input
+                type="number"
+                id="rating"
+                placeholder="Rating (1-10)"
+                min="1"
+                max="10"
+                required
+            >
+
+            <textarea
+                id="reviewText"
+                placeholder="Write your review..."
+                rows="5"
+                required
+            ></textarea>
+
+            <button type="submit" id="submitReview">
+                Submit Review
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+<footer>
+    © 2026 CinePulse. Your Movie Discovery Hub.
+</footer>
+
+<script>
+
+    const params = new URLSearchParams(window.location.search);
+    const movieId = params.get("id");
+
+    // Get logged-in user
+    let loggedInUser = null;
+
+    try {
+        loggedInUser = JSON.parse(
+            localStorage.getItem("cinepulseUser")
+        );
+    } catch (error) {
+        loggedInUser = null;
+    }
+
+    const reviewForm = document.getElementById("reviewForm");
+    const loginStatus = document.getElementById("loginStatus");
+    const submitButton = document.getElementById("submitReview");
+
+    // Update navigation based on login status
+    function updateNavigation() {
+
+        const authNavigation =
+            document.getElementById("authNavigation");
+
+        if (loggedInUser && loggedInUser.user_id) {
+
+            const welcome = document.createElement("span");
+
+            welcome.className = "welcome-user";
+            welcome.textContent =
+                "Welcome, " + (loggedInUser.username || "User");
+
+            const logoutButton = document.createElement("button");
+
+            logoutButton.className = "logout-btn";
+            logoutButton.textContent = "Logout";
+            logoutButton.onclick = logoutUser;
+
+            authNavigation.replaceChildren(
+                welcome,
+                logoutButton
+            );
+
+        } else {
+
+            authNavigation.innerHTML =
+                '<a href="auth.html">Login</a>' +
+                '<a href="auth.html">Register</a>';
+        }
+    }
+
+    // Logout user
+    function logoutUser() {
+
+        const confirmLogout =
+            confirm("Are you sure you want to logout?");
+
+        if (confirmLogout) {
+
+            localStorage.removeItem("cinepulseUser");
+
+            loggedInUser = null;
+
+            alert("Logged out successfully!");
+
+            updateNavigation();
+            checkLogin();
+        }
+    }
+
+    // Check login status
+    function checkLogin() {
+
+        if (loggedInUser && loggedInUser.user_id) {
+
+            const username =
+                loggedInUser.username || loggedInUser.email || "User";
+
+            loginStatus.textContent =
+                "Logged in as: " + username;
+
+            reviewForm.style.display = "block";
+
+        } else {
+
+            loginStatus.innerHTML =
+                'Please <a href="auth.html" class="login-link">login</a> to write a review.';
+
+            reviewForm.style.display = "none";
+        }
+    }
+
+    // Load movie details
+    async function loadMovieDetails() {
+
+        if (!movieId) {
+            document.getElementById("movieTitle").textContent =
+                "Movie ID not found";
+            document.getElementById("watchlistButton").disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/movies/${movieId}`);
+
+            if (!response.ok) {
+                throw new Error("Movie not found");
+            }
+
+            const movie = await response.json();
+
+            document.getElementById("movieTitle").textContent =
+                movie.title;
+
+            document.getElementById("movieOverview").textContent =
+                movie.overview || "No overview available.";
+
+            document.getElementById("movieLanguage").textContent =
+                "Language: " + (movie.language || "Unavailable");
+
+            document.getElementById("movieRelease").textContent =
+                "Release Date: " +
+                (movie.release_date
+                    ? String(movie.release_date).split("T")[0]
+                    : "Unavailable");
+
+            // Load movie genre from movie list API
+            const moviesResponse = await fetch("/api/movies");
+
+            if (!moviesResponse.ok) {
+                throw new Error("Unable to load movie genres");
+            }
+
+            const moviesData = await moviesResponse.json();
+
+            const matchingMovie = (moviesData.movies || []).find(
+                item => String(item.movie_id) === String(movieId)
+            );
+
+            document.getElementById("movieGenres").textContent =
+                "Genres: " +
+                (matchingMovie?.genres || "Unavailable");
+
+            const poster = document.getElementById("moviePoster");
+
+            poster.innerHTML = "";
+
+            if (movie.poster_path) {
+                const image = document.createElement("img");
+                image.src = movie.poster_path;
+                image.alt = movie.title;
+                poster.appendChild(image);
+            } else {
+                poster.textContent = "No Poster Available";
+            }
+
+        } catch (error) {
+            document.getElementById("movieTitle").textContent =
+                "Unable to load movie details";
+            console.error(error);
+        }
+    }
+
+    // Add movie to watchlist
+    async function addToWatchlist() {
+
+        if (!movieId) {
+            alert("Movie ID not found.");
+            return;
+        }
+
+        if (!loggedInUser || !loggedInUser.user_id) {
+
+            alert("Please login to add movies to your watchlist.");
+
+            window.location.href = "auth.html";
+            return;
+        }
+
+        const button = document.getElementById("watchlistButton");
+
+        button.disabled = true;
+        button.textContent = "Adding...";
+
+        try {
+
+            const userId = loggedInUser.user_id;
+
+            // Check existing watchlist
+            const checkResponse = await fetch(
+                `/api/users/${userId}/watchlist`
+            );
+
+            if (!checkResponse.ok) {
+                throw new Error("Unable to check watchlist.");
+            }
+
+            const watchlistData = await checkResponse.json();
+
+            const alreadyExists = (watchlistData.watchlist || [])
+                .some(movie =>
+                    Number(movie.movie_id) === Number(movieId)
+                );
+
+            if (alreadyExists) {
+
+                alert("This movie is already in your watchlist.");
+
+                button.textContent = "Already Added";
+                return;
+            }
+
+            // Add movie
+            const response = await fetch(
+                `/api/users/${userId}/watchlist`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        movie_id: Number(movieId)
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Unable to add movie."
+                );
+            }
+
+            alert("Movie added to your watchlist!");
+
+            button.textContent = "Added to Watchlist";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(error.message || "Something went wrong.");
+
+            button.textContent = "+ Add to Watchlist";
+            button.disabled = false;
+        }
+    }
+
+    // Load average rating
+    async function loadRating() {
+
+        try {
+            const response = await fetch(
+                `/api/movies/${movieId}/rating`
+            );
+
+            const data = await response.json();
+
+            const average = data.average_rating === null
+                ? "No ratings yet"
+                : Number(data.average_rating).toFixed(1) + "/10";
+
+            document.getElementById("movieRating").textContent =
+                "⭐ Average Rating: " + average +
+                " (" + data.total_reviews + " reviews)";
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Load reviews
+    async function loadReviews() {
+
+        try {
+            const response = await fetch(
+                `/api/movies/${movieId}/reviews`
+            );
+
+            const data = await response.json();
+
+            const container =
+                document.getElementById("reviewsContainer");
+
+            container.innerHTML = "";
+
+            if (!data.reviews || data.reviews.length === 0) {
+                container.textContent =
+                    "No reviews yet. Be the first!";
+                return;
+            }
+
+            data.reviews.forEach(review => {
+
+                const card = document.createElement("div");
+                card.className = "review-card";
+
+                const username = document.createElement("strong");
+                username.textContent =
+                    review.username || "CinePulse User";
+
+                const rating = document.createElement("p");
+                rating.textContent = "⭐ " + review.rating + "/10";
+
+                const reviewText = document.createElement("p");
+                reviewText.textContent = review.review_text;
+
+                card.appendChild(username);
+                card.appendChild(rating);
+                card.appendChild(reviewText);
+
+                container.appendChild(card);
+            });
+
+        } catch (error) {
+            document.getElementById("reviewsContainer").textContent =
+                "Unable to load reviews.";
+            console.error(error);
+        }
+    }
+
+    // Submit review using logged-in user's ID
+    reviewForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!loggedInUser || !loggedInUser.user_id) {
+            alert("Please login before submitting a review.");
+            window.location.href = "auth.html";
+            return;
+        }
+
+        const rating = document.getElementById("rating").value;
+        const reviewText =
+            document.getElementById("reviewText").value;
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+
+        try {
+            const response = await fetch(
+                `/api/movies/${movieId}/reviews`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: loggedInUser.user_id,
+                        rating: Number(rating),
+                        review_text: reviewText
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || "Unable to submit review");
+                return;
+            }
+
+            alert("Review submitted successfully!");
+
+            reviewForm.reset();
+
+            await loadReviews();
+            await loadRating();
+
+        } catch (error) {
+            alert("Server error. Please try again.");
+            console.error(error);
+
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Review";
+        }
+    });
+
+    // Load all details
+    updateNavigation();
+    checkLogin();
+    loadMovieDetails();
+    loadReviews();
+    loadRating();
+
+</script>
+
+</body>
+</html>

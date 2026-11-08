@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePulse | My Watchlist</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0B1020;
+            color: #F5F7FA;
+        }
+
+        header {
+            padding: 22px 7%;
+            background: #151B2B;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            color: #31D7C2;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        nav a {
+            color: #F5F7FA;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: #31D7C2;
+        }
+
+        .welcome-user {
+            color: #31D7C2;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #FFB84D;
+            color: #0B1020;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #E9A43D;
+        }
+
+        .container {
+            padding: 40px 7%;
+        }
+
+        h1 {
+            color: #31D7C2;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #A5ADBD;
+            margin-bottom: 30px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .movie-card {
+            background: #151B2B;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #263449;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: #263449;
+        }
+
+        .movie-info {
+            padding: 16px;
+        }
+
+        .movie-info h3 {
+            color: #31D7C2;
+            margin-bottom: 10px;
+        }
+
+        .movie-info p {
+            color: #A5ADBD;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .details-btn {
+            display: inline-block;
+            background: #31D7C2;
+            color: #0B1020;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 8px;
+        }
+
+        .details-btn:hover {
+            background: #25BBA9;
+        }
+
+        .remove-btn {
+            background: #FFB84D;
+            color: #0B1020;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .remove-btn:hover {
+            background: #E9A43D;
+        }
+
+        .empty-message {
+            color: #A5ADBD;
+            font-size: 17px;
+            padding: 25px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #151B2B;
+            color: #A5ADBD;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">CinePulse</div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#movies">Movies</a>
+        <a href="watchlist.html">My Watchlist</a>
+
+        <span id="authNavigation"></span>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h1>My Watchlist 🎬</h1>
+
+    <p class="subtitle" id="welcomeMessage">
+        Your saved movies in one place.
+    </p>
+
+    <div class="movie-grid" id="watchlistContainer">
+        Loading your watchlist...
+    </div>
+
+</div>
+
+<footer>
+    © 2026 CinePulse. Your Movie Discovery Hub.
+</footer>
+
+<script>
+
+    // Get logged-in user
+    let loggedInUser = null;
+
+    try {
+        loggedInUser = JSON.parse(
+            localStorage.getItem("cinepulseUser")
+        );
+    } catch (error) {
+        loggedInUser = null;
+    }
+
+    const container =
+        document.getElementById("watchlistContainer");
+
+    // Update navigation based on login status
+    function updateNavigation() {
+
+        const authNavigation =
+            document.getElementById("authNavigation");
+
+        if (loggedInUser && loggedInUser.user_id) {
+
+            const welcome = document.createElement("span");
+
+            welcome.className = "welcome-user";
+            welcome.textContent =
+                "Welcome, " + (loggedInUser.username || "User");
+
+            const logoutButton = document.createElement("button");
+
+            logoutButton.className = "logout-btn";
+            logoutButton.textContent = "Logout";
+            logoutButton.onclick = logoutUser;
+
+            authNavigation.replaceChildren(
+                welcome,
+                logoutButton
+            );
+
+        } else {
+
+            authNavigation.innerHTML =
+                '<a href="auth.html">Login</a>' +
+                '<a href="auth.html">Register</a>';
+        }
+    }
+
+    // Logout user
+    function logoutUser() {
+
+        const confirmLogout =
+            confirm("Are you sure you want to logout?");
+
+        if (confirmLogout) {
+
+            localStorage.removeItem("cinepulseUser");
+
+            loggedInUser = null;
+
+            alert("Logged out successfully!");
+
+            updateNavigation();
+
+            document.getElementById("welcomeMessage").textContent =
+                "Please login to view your personal watchlist.";
+
+            container.innerHTML = "";
+
+            const message = document.createElement("p");
+            message.className = "empty-message";
+            message.textContent = "You need to login first.";
+
+            const loginLink = document.createElement("a");
+            loginLink.href = "auth.html";
+            loginLink.className = "details-btn";
+            loginLink.textContent = "Login Now";
+
+            container.appendChild(message);
+            container.appendChild(loginLink);
+        }
+    }
+
+    // Check login
+    function checkLogin() {
+
+        if (!loggedInUser || !loggedInUser.user_id) {
+
+            document.getElementById("welcomeMessage").textContent =
+                "Please login to view your personal watchlist.";
+
+            container.innerHTML = "";
+
+            const message = document.createElement("p");
+            message.className = "empty-message";
+            message.textContent = "You need to login first.";
+
+            const loginLink = document.createElement("a");
+            loginLink.href = "auth.html";
+            loginLink.className = "details-btn";
+            loginLink.textContent = "Login Now";
+
+            container.appendChild(message);
+            container.appendChild(loginLink);
+
+        } else {
+
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome, " + (loggedInUser.username || "User") +
+                "! Here are your saved movies.";
+
+            loadWatchlist();
+        }
+    }
+
+    // Load watchlist
+    async function loadWatchlist() {
+
+        try {
+
+            const response = await fetch(
+                `/api/users/${loggedInUser.user_id}/watchlist`
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Unable to load watchlist");
+            }
+
+            container.innerHTML = "";
+
+            if (!data.watchlist || data.watchlist.length === 0) {
+
+                const emptyMessage = document.createElement("p");
+                emptyMessage.className = "empty-message";
+                emptyMessage.textContent =
+                    "Your watchlist is empty. Explore movies and add your favourites!";
+
+                container.appendChild(emptyMessage);
+                return;
+            }
+
+            data.watchlist.forEach(movie => {
+
+                const card = document.createElement("div");
+                card.className = "movie-card";
+
+                const image = document.createElement("img");
+                image.src = movie.poster_path || "";
+                image.alt = movie.title;
+
+                image.onerror = function() {
+                    this.style.display = "none";
+                };
+
+                const info = document.createElement("div");
+                info.className = "movie-info";
+
+                const title = document.createElement("h3");
+                title.textContent = movie.title;
+
+                const language = document.createElement("p");
+                language.textContent =
+                    "Language: " + (movie.language || "Unavailable");
+
+                const detailsLink = document.createElement("a");
+                detailsLink.href =
+                    `movie.html?id=${encodeURIComponent(movie.movie_id)}`;
+                detailsLink.className = "details-btn";
+                detailsLink.textContent = "View Details";
+
+                const removeButton = document.createElement("button");
+                removeButton.className = "remove-btn";
+                removeButton.textContent = "Remove";
+
+                removeButton.addEventListener("click", function() {
+                    removeMovie(movie.movie_id);
+                });
+
+                info.appendChild(title);
+                info.appendChild(language);
+                info.appendChild(detailsLink);
+                info.appendChild(removeButton);
+
+                card.appendChild(image);
+                card.appendChild(info);
+
+                container.appendChild(card);
+            });
+
+        } catch (error) {
+
+            container.textContent =
+                "Unable to load your watchlist. Please try again.";
+
+            console.error(error);
+        }
+    }
+
+    // Remove movie from watchlist
+    async function removeMovie(movieId) {
+
+        const confirmRemove = confirm(
+            "Are you sure you want to remove this movie?"
+        );
+
+        if (!confirmRemove) return;
+
+        try {
+
+            const response = await fetch(
+                `/api/users/${loggedInUser.user_id}/watchlist/${movieId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || "Unable to remove movie");
+                return;
+            }
+
+            alert("Movie removed from your watchlist!");
+
+            loadWatchlist();
+
+        } catch (error) {
+
+            alert("Server error. Please try again.");
+            console.error(error);
+        }
+    }
+
+    // Start the page
+    updateNavigation();
+    checkLogin();
+
+</script>
+
+</body>
+</html>

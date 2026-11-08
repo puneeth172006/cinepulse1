@@ -1,0 +1,611 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePulse | Discover Movies</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1020;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            background: #151b2b;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #31d7c2;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: #31d7c2;
+        }
+
+        .welcome-user {
+            color: #31d7c2;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #ffb84d;
+            color: #0b1020;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #e9a43d;
+        }
+
+        .hero {
+            padding: 75px 7%;
+            background: linear-gradient(90deg, #151b2b, #263c50);
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #c0c8d5;
+            margin-bottom: 25px;
+        }
+
+        .search {
+            padding: 13px;
+            width: 300px;
+            max-width: 100%;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+            margin: 5px 5px 5px 0;
+        }
+
+        .section {
+            padding: 40px 7%;
+        }
+
+        .section h2 {
+            margin-bottom: 25px;
+        }
+
+        .movie-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 22px;
+        }
+
+        .movie-card {
+            background: #151b2b;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .poster {
+            height: 260px;
+            background: #263449;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #31d7c2;
+            overflow: hidden;
+        }
+
+        .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .poster-placeholder {
+            color: #31d7c2;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-info h3 {
+            margin-bottom: 9px;
+        }
+
+        .movie-info p {
+            color: #a5adbd;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .details-link {
+            color: #31d7c2 !important;
+            margin-top: 12px;
+        }
+
+        .watchlist-btn {
+            width: 100%;
+            padding: 11px;
+            margin-top: 12px;
+            background: #31d7c2;
+            color: #0b1020;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .watchlist-btn:hover {
+            background: #24b9a7;
+        }
+
+        .watchlist-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #a5adbd;
+            background: #151b2b;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero {
+                padding: 45px 7%;
+            }
+
+            .movie-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .poster {
+                height: 220px;
+            }
+
+            .movie-info {
+                padding: 12px;
+            }
+
+            nav {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">CinePulse</div>
+
+        <nav id="navigation">
+            <a href="index.html">Home</a>
+            <a href="#movies">Movies</a>
+            <a href="watchlist.html">My Watchlist</a>
+            <span id="authNavigation"></span>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Discover Your Next Favourite Movie</h1>
+        <p>Explore movies, read reviews and find something worth watching.</p>
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search"
+            placeholder="Search movies..."
+        >
+
+        <select id="languageFilter" class="search">
+            <option value="">All Languages</option>
+            <option value="English">English</option>
+            <option value="Kannada">Kannada</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Tamil">Tamil</option>
+        </select>
+
+        <select id="genreFilter" class="search">
+            <option value="">All Genres</option>
+        </select>
+    </section>
+
+    <section class="section" id="movies">
+        <h2>Explore Movies</h2>
+
+        <div class="movie-container" id="movieContainer">
+            Loading movies...
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 CinePulse. Your Movie Discovery Hub.</p>
+    </footer>
+
+    <script>
+        let allMovies = [];
+
+        // Update navigation based on login status
+        function updateNavigation() {
+            const authNavigation =
+                document.getElementById("authNavigation");
+
+            let loggedInUser = null;
+
+            try {
+                loggedInUser = JSON.parse(
+                    localStorage.getItem("cinepulseUser")
+                );
+            } catch (error) {
+                loggedInUser = null;
+            }
+
+            if (loggedInUser && loggedInUser.user_id) {
+                const welcome = document.createElement("span");
+
+                welcome.className = "welcome-user";
+                welcome.textContent =
+                    "Welcome, " + (loggedInUser.username || "User");
+
+                const logoutButton = document.createElement("button");
+
+                logoutButton.className = "logout-btn";
+                logoutButton.textContent = "Logout";
+                logoutButton.onclick = logoutUser;
+
+                authNavigation.replaceChildren(
+                    welcome,
+                    logoutButton
+                );
+
+            } else {
+                authNavigation.innerHTML =
+                    '<a href="auth.html">Login</a>' +
+                    '<a href="auth.html">Register</a>';
+            }
+        }
+
+        // Logout user
+        function logoutUser() {
+            const confirmLogout =
+                confirm("Are you sure you want to logout?");
+
+            if (confirmLogout) {
+                localStorage.removeItem("cinepulseUser");
+
+                alert("Logged out successfully!");
+
+                updateNavigation();
+            }
+        }
+
+        // Load movies from backend
+        async function loadMovies() {
+            const container =
+                document.getElementById("movieContainer");
+
+            try {
+                const response = await fetch("/api/movies");
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch movies");
+                }
+
+                const data = await response.json();
+
+                allMovies = data.movies || [];
+
+                loadGenres();
+                displayMovies(allMovies);
+
+            } catch (error) {
+                container.innerHTML =
+                    "Unable to load movies. Please check your server.";
+
+                console.error(error);
+            }
+        }
+
+        // Load genres into dropdown
+        function loadGenres() {
+            const genreFilter =
+                document.getElementById("genreFilter");
+
+            const genres = [...new Set(
+                allMovies.flatMap(movie =>
+                    (movie.genres || "").split(",").filter(Boolean)
+                )
+            )].sort();
+
+            genreFilter.innerHTML =
+                '<option value="">All Genres</option>';
+
+            genres.forEach(genre => {
+                const option = document.createElement("option");
+
+                option.value = genre.trim();
+                option.textContent = genre.trim();
+
+                genreFilter.appendChild(option);
+            });
+        }
+
+        // Create a safe local poster URL
+        function getPosterUrl(posterPath) {
+            if (!posterPath) {
+                return "";
+            }
+
+            const cleanPath = posterPath
+                .replace(/\\/g, "/")
+                .replace(/^\/+/, "");
+
+            return "/" + cleanPath
+                .split("/")
+                .map(part => encodeURIComponent(part))
+                .join("/");
+        }
+
+        // Display fallback when poster is missing
+        function showPosterFallback(image) {
+            const placeholder = document.createElement("div");
+
+            placeholder.className = "poster-placeholder";
+            placeholder.textContent = "No Poster Available";
+
+            image.replaceWith(placeholder);
+        }
+
+        // Display movie cards
+        function displayMovies(movies) {
+            const container =
+                document.getElementById("movieContainer");
+
+            if (movies.length === 0) {
+                container.innerHTML = "No movies found.";
+                return;
+            }
+
+            container.innerHTML = movies.map(movie => {
+                const releaseDate = movie.release_date
+                    ? movie.release_date.toString().split("T")[0]
+                    : "Release date unavailable";
+
+                const posterUrl = getPosterUrl(movie.poster_path);
+
+                const posterHTML = posterUrl
+                    ? `<img
+                            src="${posterUrl}"
+                            alt="${movie.title}"
+                            onerror="showPosterFallback(this)"
+                       >`
+                    : `<div class="poster-placeholder">
+                            No Poster Available
+                       </div>`;
+
+                return `
+                    <div class="movie-card"
+                         onclick="openMovie(${movie.movie_id})"
+                         style="cursor:pointer">
+
+                        <div class="poster">
+                            ${posterHTML}
+                        </div>
+
+                        <div class="movie-info">
+                            <h3>${movie.title}</h3>
+
+                            <p>${movie.language || "Language unavailable"}</p>
+
+                            <p>${releaseDate}</p>
+
+                            <p style="color:#31d7c2">
+                                ${movie.genres || "Genre unavailable"}
+                            </p>
+
+                            <p class="details-link">
+                                View Details →
+                            </p>
+
+                            <button
+                                class="watchlist-btn"
+                                onclick="addToWatchlist(event, ${movie.movie_id})">
+                                + Add to Watchlist
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // Open movie details page
+        function openMovie(movieId) {
+            window.location.href = `movie.html?id=${movieId}`;
+        }
+
+        // Add movie to watchlist
+        async function addToWatchlist(event, movieId) {
+            event.stopPropagation();
+
+            let loggedInUser = null;
+
+            try {
+                loggedInUser = JSON.parse(
+                    localStorage.getItem("cinepulseUser")
+                );
+            } catch (error) {
+                loggedInUser = null;
+            }
+
+            if (!loggedInUser || !loggedInUser.user_id) {
+                alert("Please login to add movies to your watchlist.");
+
+                window.location.href = "auth.html";
+                return;
+            }
+
+            const button = event.currentTarget;
+
+            button.disabled = true;
+            button.textContent = "Adding...";
+
+            try {
+                const userId = loggedInUser.user_id;
+
+                // Check whether movie is already in watchlist
+                const checkResponse = await fetch(
+                    `/api/users/${userId}/watchlist`
+                );
+
+                if (!checkResponse.ok) {
+                    throw new Error("Unable to check watchlist.");
+                }
+
+                const watchlistData = await checkResponse.json();
+
+                const alreadyExists =
+                    (watchlistData.watchlist || []).some(movie =>
+                        Number(movie.movie_id) === Number(movieId)
+                    );
+
+                if (alreadyExists) {
+                    alert("This movie is already in your watchlist.");
+
+                    button.textContent = "Already Added";
+                    return;
+                }
+
+                // Add movie to watchlist
+                const response = await fetch(
+                    `/api/users/${userId}/watchlist`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            movie_id: movieId
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Unable to add movie."
+                    );
+                }
+
+                alert("Movie added to your watchlist!");
+
+                button.textContent = "Added to Watchlist";
+
+            } catch (error) {
+                console.error(error);
+
+                alert(error.message || "Something went wrong.");
+
+                button.textContent = "+ Add to Watchlist";
+                button.disabled = false;
+            }
+        }
+
+        // Search and filter movies
+        function applyFilters() {
+            const searchText = document
+                .getElementById("searchInput")
+                .value.toLowerCase().trim();
+
+            const selectedLanguage =
+                document.getElementById("languageFilter").value;
+
+            const selectedGenre =
+                document.getElementById("genreFilter").value;
+
+            const filteredMovies = allMovies.filter(movie => {
+                const matchesSearch = (movie.title || "")
+                    .toLowerCase()
+                    .includes(searchText);
+
+                const matchesLanguage = selectedLanguage === "" ||
+                    (movie.language || "").toLowerCase() ===
+                    selectedLanguage.toLowerCase();
+
+                const matchesGenre = selectedGenre === "" ||
+                    (movie.genres || "").split(",").some(genre =>
+                        genre.trim().toLowerCase() ===
+                        selectedGenre.toLowerCase()
+                    );
+
+                return matchesSearch &&
+                       matchesLanguage &&
+                       matchesGenre;
+            });
+
+            displayMovies(filteredMovies);
+        }
+
+        document.getElementById("searchInput")
+            .addEventListener("input", applyFilters);
+
+        document.getElementById("languageFilter")
+            .addEventListener("change", applyFilters);
+
+        document.getElementById("genreFilter")
+            .addEventListener("change", applyFilters);
+
+        // Start the homepage
+        updateNavigation();
+        loadMovies();
+    </script>
+
+</body>
+</html>

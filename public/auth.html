@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePulse | Login & Register</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0B1020;
+            color: #F5F7FA;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: #151B2B;
+            padding: 35px;
+            border-radius: 15px;
+            border: 1px solid #293348;
+        }
+
+        .logo {
+            text-align: center;
+            color: #31D7C2;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #A5ADBD;
+            margin-bottom: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            background: #252E40;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .tabs button.active {
+            background: #31D7C2;
+            color: #0B1020;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #DCE1EA;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #354157;
+            border-radius: 7px;
+            background: #0B1020;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #31D7C2;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #31D7C2;
+            color: #0B1020;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            background: #26BBAA;
+        }
+
+        .message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #FFB84D;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: #31D7C2;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <div class="logo">CinePulse</div>
+        <p class="subtitle">Your world of movies and reviews</p>
+
+        <div class="tabs">
+            <button id="loginTab" class="active" onclick="showLogin()">
+                Login
+            </button>
+
+            <button id="registerTab" onclick="showRegister()">
+                Register
+            </button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail"
+                       placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword"
+                       placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Login
+            </button>
+
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="registerForm" class="hidden">
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="registerUsername"
+                       placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="registerEmail"
+                       placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="registerPassword"
+                       placeholder="Create a password"
+                       minlength="6" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Create Account
+            </button>
+
+        </form>
+
+        <p id="message" class="message"></p>
+
+        <a href="index.html" class="back-link">
+            ← Back to Home
+        </a>
+
+    </div>
+
+    <script>
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+        const message = document.getElementById("message");
+
+        function showLogin() {
+            loginForm.classList.remove("hidden");
+            registerForm.classList.add("hidden");
+
+            document.getElementById("loginTab").classList.add("active");
+            document.getElementById("registerTab").classList.remove("active");
+
+            message.textContent = "";
+        }
+
+        function showRegister() {
+            registerForm.classList.remove("hidden");
+            loginForm.classList.add("hidden");
+
+            document.getElementById("registerTab").classList.add("active");
+            document.getElementById("loginTab").classList.remove("active");
+
+            message.textContent = "";
+        }
+
+        // REGISTER
+        registerForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("registerUsername").value;
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+
+            try {
+                const response = await fetch("/api/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    message.textContent = "Account created successfully! Please login.";
+                    registerForm.reset();
+                    showLogin();
+                    message.textContent = "Account created successfully! Please login.";
+                    document.getElementById("loginEmail").value = email;
+                } else {
+                    message.textContent = data.message || "Registration failed.";
+                }
+
+            } catch (error) {
+                message.textContent = "Unable to connect to the server.";
+            }
+        });
+
+        // LOGIN
+        loginForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem("cinepulseUser", JSON.stringify(data.user));
+
+                    message.textContent = "Login successful!";
+
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 800);
+
+                } else {
+                    message.textContent = data.message || "Invalid email or password.";
+                }
+
+            } catch (error) {
+                message.textContent = "Unable to connect to the server.";
+            }
+        });
+    </script>
+
+</body>
+</html>
